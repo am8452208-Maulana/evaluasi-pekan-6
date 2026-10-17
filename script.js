@@ -480,3 +480,108 @@ console.log("\nSaldo kas:", formatRupiah(kasir.saldoKas));
 // 6. for...of memilih pecahan uang, sedangkan while menghitung berapa
 // lembar pecahan tersebut. Pembagian dan modulo juga bisa digunakan.
 
+// ========================================
+// BAGIAN 4: LAPORAN HARIAN
+// ========================================
+
+// Mengambil semua transaksi dari percobaan pertama.
+const riwayatLaporan = kasir.riwayat;
+
+// Menghitung jumlah transaksi berdasarkan status.
+const laporan = {
+    jumlahTransaksi: riwayatLaporan.length,
+
+    jumlahLunas: riwayatLaporan.filter(
+        transaksi => transaksi.status === "LUNAS"
+    ).length,
+
+    jumlahKurang: riwayatLaporan.filter(
+        transaksi => transaksi.status === "KURANG"
+    ).length,
+
+    jumlahDitolak: riwayatLaporan.filter(
+        transaksi => transaksi.status === "DITOLAK"
+    ).length,
+
+    pendapatan: 0,
+    rataRata: 0,
+    transaksiTerbesar: null,
+    penjualanPerMenu: {},
+    menuTerlaris: "",
+    daftarDitolak: [],
+    kodeLunas: [],
+    ringkasanKode: "",
+    menuStokMenipis: []
+};
+
+// Mengolah transaksi yang berstatus LUNAS saja.
+for (const transaksi of riwayatLaporan) {
+    if (transaksi.status === "LUNAS") {
+        laporan.pendapatan += transaksi.total;
+
+        // Mencari transaksi LUNAS dengan total terbesar.
+        if (
+            laporan.transaksiTerbesar === null ||
+            transaksi.total > laporan.transaksiTerbesar.total
+        ) {
+            laporan.transaksiTerbesar = transaksi;
+        }
+
+        // Mengumpulkan kode transaksi LUNAS.
+        laporan.kodeLunas.push(transaksi.kode);
+
+        // Menghitung penjualan setiap menu.
+        // Sesuaikan "items", "nama", dan "jumlah" jika nama properti
+        // di kode Bagian 2-3 milikmu berbeda.
+        for (const item of transaksi.items) {
+            const namaMenu = item.nama;
+
+            // Bracket notation dipakai karena nama menu berasal dari variabel.
+            if (namaMenu in laporan.penjualanPerMenu) {
+                laporan.penjualanPerMenu[namaMenu] += item.jumlah;
+            } else {
+                laporan.penjualanPerMenu[namaMenu] = item.jumlah;
+            }
+        }
+    }
+
+    // Mencatat transaksi yang ditolak.
+    if (transaksi.status === "DITOLAK") {
+        laporan.daftarDitolak.push({
+            kode: transaksi.kode,
+            alasan: transaksi.alasan
+        });
+    }
+}
+
+// Menghitung rata-rata pendapatan per transaksi LUNAS.
+laporan.rataRata = laporan.jumlahLunas > 0
+    ? Math.round(laporan.pendapatan / laporan.jumlahLunas)
+    : 0;
+
+// Mencari menu dengan jumlah terjual terbanyak.
+for (const namaMenu in laporan.penjualanPerMenu) {
+    if (
+        laporan.menuTerlaris === "" ||
+        laporan.penjualanPerMenu[namaMenu] >
+        laporan.penjualanPerMenu[laporan.menuTerlaris]
+    ) {
+        laporan.menuTerlaris = namaMenu;
+    }
+}
+
+// Membuat ringkasan kode menggunakan perulangan dan +=.
+for (let i = 0; i < laporan.kodeLunas.length; i++) {
+    if (i > 0) {
+        laporan.ringkasanKode += ", ";
+    }
+
+    laporan.ringkasanKode += laporan.kodeLunas[i];
+}
+
+// Mencari menu yang stoknya kurang dari 3.
+for (const namaMenu in kasir.menu) {
+    if (kasir.menu[namaMenu].stok < 3) {
+        laporan.menuStokMenipis.push(namaMenu);
+    }
+}
