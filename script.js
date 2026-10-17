@@ -101,3 +101,104 @@ const transaksiMentah = [
         ]
     }
 ];
+
+// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+// BAGIAN 2.2 - FUNCTION PEMBERSIH DATA
+// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+// Function declaration: merapikan nama pelanggan atau menu.
+function bersihkanNama(teks) {
+    return teks
+        .trim()
+        .replace(/\s+/g, " ")
+        .toLowerCase()
+        .replace(/\b[a-z]/g, huruf => huruf.toUpperCase());
+}
+
+// Function expression: mengubah teks menjadi angka.
+const ubahKeAngka = function (teks) {
+    const angka = Number(teks.replace(/[.\s]/g, ""));
+    return Number.isFinite(angka) ? angka : 0;
+};
+
+// Arrow function: membaca persentase voucher.
+const ambilPersenVoucher = (kode) => {
+    const kodeBersih = kode.trim().toUpperCase();
+    const cocok = kodeBersih.match(/^DISKON(\d+)$/);
+    return cocok ? Number(cocok[1]) : 0;
+};
+
+// Mengubah angka menjadi format Rupiah tanpa toLocaleString.
+function formatRupiah(angka) {
+    const angkaBulat = Math.round(angka);
+    const teks = String(Math.abs(angkaBulat));
+    const hasil = teks.replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+    return (angkaBulat < 0 ? "-Rp " : "Rp ") + hasil;
+}
+
+// Pengujian setiap function, minimal 3 kasus.
+console.log("\n=== UJI PEMBERSIHAN DATA ===");
+
+console.log('bersihkanNama("  rina   WULANDARI ") →',
+    bersihkanNama("  rina   WULANDARI "));
+console.log('bersihkanNama("") →', bersihkanNama(""));
+console.log('bersihkanNama("ahMAD maULANA") →',
+    bersihkanNama("ahMAD maULANA"));
+
+console.log('ubahKeAngka("150.000") →', ubahKeAngka("150.000"));
+console.log('ubahKeAngka("75000") →', ubahKeAngka("75000"));
+console.log('ubahKeAngka("abc") →', ubahKeAngka("abc"));
+
+console.log('ambilPersenVoucher(" diskon10 ") →',
+    ambilPersenVoucher(" diskon10 "));
+console.log('ambilPersenVoucher("PROMO5") →',
+    ambilPersenVoucher("PROMO5"));
+console.log('ambilPersenVoucher("") →', ambilPersenVoucher(""));
+
+console.log("formatRupiah(1250000) →", formatRupiah(1250000));
+console.log("formatRupiah(500) →", formatRupiah(500));
+console.log("formatRupiah(0) →", formatRupiah(0));
+
+// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+// BAGIAN 2.3 - DATA BERSIH
+// -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+
+const transaksiBersih = [];
+
+for (const trx of transaksiMentah) {
+    const pesananBersih = [];
+
+    for (const item of trx.pesanan) {
+        pesananBersih.push({
+            menu: bersihkanNama(item.menu),
+            jumlah: ubahKeAngka(item.jumlah)
+        });
+    }
+
+    transaksiBersih.push({
+        kode: trx.kode.toUpperCase(),
+        pelanggan: bersihkanNama(trx.pelanggan),
+        hari: trx.hari.trim().toLowerCase().replace(/\s+/g, " "),
+        uangBayar: ubahKeAngka(trx.uangBayar),
+        persenVoucher: ambilPersenVoucher(trx.voucher),
+        pesanan: pesananBersih
+    });
+}
+
+console.log("\n=== TRANSAKSI BERSIH ===");
+console.log(transaksiBersih);
+
+// Jawaban teori Bagian 2:
+// 1. parseInt membaca bilangan bulat, parseFloat membaca bilangan desimal,
+// dan Number mengubah seluruh teks menjadi angka. Titik ribuan dihapus
+// agar "150.000" menjadi 150000; parseInt("150.000") menghasilkan 150.
+// 2. toFixed menghasilkan string. Contohnya typeof (2.5).toFixed(0)
+// adalah "string"; hasil "3" + 2 menjadi "32", bukan 5.
+// 3. replace mengganti kecocokan pertama, sedangkan replaceAll mengganti
+// semua kecocokan. replaceAll cocok untuk menghapus semua titik ribuan.
+// 4. toUpperCase tidak mengubah string asli karena string bersifat
+// immutable; hasilnya harus disimpan atau digunakan langsung.
+// 5. bersihkanNama adalah declaration karena mudah dipanggil berdasarkan
+// nama; ubahKeAngka adalah expression; ambilPersenVoucher adalah arrow
+// function yang ringkas.
+
