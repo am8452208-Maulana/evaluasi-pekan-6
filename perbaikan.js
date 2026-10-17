@@ -101,3 +101,93 @@ let rataRataTotal = rataRata + 10;
 function formatRupiah(angka) {
     return "Rp " + angka;
 }
+// ========================================
+// HASIL PROGRAM
+// ========================================
+
+console.log(subtotal, diskon, promo, pajak, total);
+console.log(uangBayar, kembalian, status);
+console.log(namaRapi);
+console.log(keranjang);
+console.log(jumlahMemberBaru);
+console.log(rataRataTotal);
+console.log(formatRupiah(kembalian));
+console.log(pelanggan.bayar(30000));
+
+// FIX 18: for...of tidak cocok untuk membaca kunci object.
+// Object.keys() menghasilkan array kunci object.
+for (const kunci of Object.keys(harga)) {
+    console.log(kunci + ": " + harga[kunci]);
+}
+
+/*
+CATATAN BUG
+
+1. saldo tanpa this:
+   Error ReferenceError karena saldo tidak didefinisikan sebagai variabel
+   lokal atau variabel global.
+
+2. i <= keranjang.length:
+   Tidak selalu menimbulkan error, tetapi membaca indeks di luar array.
+   Harga pada indeks tersebut menjadi undefined dan subtotal dapat menjadi NaN.
+
+3. Urutan kondisi diskon salah:
+   Tidak error, tetapi subtotal 50000 mendapatkan diskon 5%, bukan 10%.
+
+4. switch tanpa break:
+   Tidak error, tetapi kasus Jumat berlanjut ke kasus berikutnya sehingga
+   promo menjadi 5000, bukan 3000.
+
+5. Perhitungan pajak salah:
+   Tidak error, tetapi perkalian hanya diterapkan ke promo, bukan ke
+   seluruh nilai setelah diskon dan promo.
+
+6. parseInt("100.000"):
+   Tidak error, tetapi menghasilkan 100 karena parseInt berhenti di titik.
+
+7. if (uangBayar = total):
+   Tidak error karena = adalah operator penugasan. Nilai uangBayar justru
+   berubah menjadi total, lalu kondisi memakai nilai total tersebut.
+
+8. Nama tidak diubah dengan benar:
+   Tidak error, tetapi hasil nama dapat menjadi "Rina rina" jika sisa
+   nama dimulai dari indeks 0.
+
+9. slice() untuk menghapus barang:
+   Tidak error, tetapi slice tidak mengubah array asli.
+
+10. unshift("air"):
+    Tidak error, tetapi air ditambahkan di awal, bukan di akhir array.
+
+11. jumlahMember + 1:
+    Tidak error, tetapi "5" + 1 menghasilkan teks "51".
+
+12. toFixed() menghasilkan string:
+    Tidak error, tetapi string ditambah 10 dapat menghasilkan penggabungan
+    teks, bukan penjumlahan angka.
+
+13. formatRupiah tanpa return:
+    Tidak error, tetapi function mengembalikan undefined.
+
+14. for...of langsung pada object harga:
+    Menghentikan program dengan TypeError karena object biasa tidak
+    dapat langsung diiterasi dengan for...of.
+
+15. bayar() memakai saldo tanpa this:
+    Menghentikan program dengan ReferenceError, sehingga pemanggilan
+    pelanggan.bayar(30000) gagal.
+
+Catatan: Jumlah dan rincian kesalahan pada kode sumber bisa bergantung
+pada bagaimana kesalahan yang saling berkaitan dihitung. Komentar FIX
+di atas menandai lokasi perbaikan pada kode hasil akhir.
+
+JAWABAN DALAM KOMENTAR
+
+1. if (uangBayar = total) tidak error karena = adalah operator penugasan
+   yang sah. Nilai uangBayar berubah menjadi nilai total. Untuk membandingkan
+   nilai, gunakan >=, ===, atau operator perbandingan lain.
+
+2. parseInt("100.000") menghasilkan 100 karena parseInt membaca angka
+   dari awal teks dan berhenti ketika menemukan karakter titik.
+   Hapus titik terlebih dahulu, lalu gunakan Number().
+*/
