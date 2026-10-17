@@ -534,7 +534,7 @@ for (const transaksi of riwayatLaporan) {
         // Sesuaikan "items", "nama", dan "jumlah" jika nama properti
         // di kode Bagian 2-3 milikmu berbeda.
         for (const item of transaksi.items) {
-            const namaMenu = item.nama;
+             const namaMenu = item.nama;
 
             // Bracket notation dipakai karena nama menu berasal dari variabel.
             if (namaMenu in laporan.penjualanPerMenu) {
