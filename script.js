@@ -585,3 +585,105 @@ for (const namaMenu in kasir.menu) {
         laporan.menuStokMenipis.push(namaMenu);
     }
 }
+
+// ========================================
+// CETAK LAPORAN
+// ========================================
+
+console.log("====================================");
+console.log(`LAPORAN HARIAN ${kedai.nama.toUpperCase()}`);
+console.log("====================================");
+console.log(`Jumlah transaksi : ${laporan.jumlahTransaksi}`);
+console.log(`Transaksi lunas  : ${laporan.jumlahLunas}`);
+console.log(`Transaksi kurang : ${laporan.jumlahKurang}`);
+console.log(`Transaksi ditolak: ${laporan.jumlahDitolak}`);
+console.log(`Pendapatan       : ${formatRupiah(laporan.pendapatan)}`);
+console.log(`Rata-rata        : ${formatRupiah(laporan.rataRata)}`);
+
+console.log(
+    "Transaksi terbesar:",
+    laporan.transaksiTerbesar
+);
+
+console.log("\nPenjualan per menu:");
+
+// for...in membaca setiap nama menu dalam object.
+for (const namaMenu in laporan.penjualanPerMenu) {
+    console.log(
+        `${namaMenu}: ${laporan.penjualanPerMenu[namaMenu]} terjual`
+    );
+}
+
+// Menampilkan kunci dan nilai object.
+console.log(
+    "Object.keys:",
+    Object.keys(laporan.penjualanPerMenu)
+);
+
+console.log(
+    "Object.values:",
+    Object.values(laporan.penjualanPerMenu)
+);
+
+// Memeriksa apakah jumlah kode sama dengan jumlah transaksi lunas.
+console.log(
+    "Jumlah kode sesuai:",
+    laporan.ringkasanKode.split(", ").length === laporan.jumlahLunas
+);
+
+console.log("Kode lunas:", laporan.kodeLunas);
+console.log("Kode dalam ringkasan:", laporan.ringkasanKode);
+
+// Demo includes().
+console.log(
+    "Kode tertentu tersedia:",
+    laporan.kodeLunas.includes(laporan.kodeLunas[0])
+);
+
+// Demo indexOf().
+console.log(
+    "Posisi kode pertama:",
+    laporan.kodeLunas.indexOf(laporan.kodeLunas[0])
+);
+
+// Demo slice(): mengambil dua kode pertama tanpa mengubah array asli.
+console.log(
+    "Dua kode pertama:",
+    laporan.kodeLunas.slice(0, 2)
+);
+
+// Demo splice() pada salinan array.
+const salinanKode = laporan.kodeLunas.slice();
+salinanKode.splice(0, 1);
+
+console.log("Salinan setelah splice:", salinanKode);
+console.log("Array kode asli tetap:", laporan.kodeLunas);
+
+console.log("Daftar transaksi ditolak:", laporan.daftarDitolak);
+console.log("Menu terlaris:", laporan.menuTerlaris);
+console.log("Menu stok menipis:", laporan.menuStokMenipis);
+
+/*
+JAWABAN DALAM KOMENTAR
+
+1. penjualanPerMenu dibuat sebagai object karena setiap nama menu menjadi
+   kunci dan jumlah terjual menjadi nilainya. Bracket notation digunakan
+   karena nama menu disimpan dalam variabel namaMenu.
+
+2. Object.keys() mengambil daftar kunci atau nama menu.
+   Object.values() mengambil daftar nilai atau jumlah terjual.
+   Hasilnya dicetak di console.
+
+3. slice() tidak mengubah array asli. splice() mengubah array tempat
+   method itu dipanggil. Di kode ini splice() digunakan pada salinanKode,
+   sehingga laporan.kodeLunas tetap sama.
+
+4. toFixed() menghasilkan string, bukan number. Jika hasilnya dipakai
+   untuk perhitungan, nilainya sebaiknya dikonversi kembali dengan Number()
+   agar tetap bertipe angka.
+
+5. Pengecekan jumlah kode bernilai true jika ringkasanKode berisi tepat
+   satu kode untuk setiap transaksi lunas. Jika tidak ada transaksi lunas,
+   split(", ") menghasilkan array [""] sehingga panjangnya 1; karena itu
+   kasus nol transaksi perlu ditangani secara khusus.
+*/
